@@ -2,6 +2,7 @@
 import URL from "url";
 import invariant from "invariant";
 import { BigNumber } from "bignumber.js";
+import * as zksync from "zksync";
 import { LedgerAPINotAvailable } from "@ledgerhq/errors";
 import JSONBigNumber from "../JSONBigNumber";
 import type { CryptoCurrency } from "../types";
@@ -92,18 +93,118 @@ export type API = {
 };
 
 export const apiForCurrency = (currency: CryptoCurrency): API => {
-  const baseURL = blockchainBaseURL(currency);
-  if (!baseURL) {
+  // Hardcoded zkSync mainnet REST API.
+  const rollupBaseURL = "https://api.zksync.io/api/v0.1";
+  const ethBaseURL = blockchainBaseURL(currency);
+
+  if (!ethBaseURL) {
     throw new LedgerAPINotAvailable(`LedgerAPINotAvailable ${currency.id}`, {
       currencyName: currency.name,
     });
   }
   return {
-    async getTransactions(address, block_hash, batch_size = 2000) {
+    async getBatchedTransactions(address, limit, offset): Tx[] {
       let { data } = await network({
         method: "GET",
         url: URL.format({
-          pathname: `${baseURL}/addresses/${address}/transactions`,
+          pathname: `${rollupBaseURL}/account/${address}/history/${offset}/${limit}`,
+        }),
+        transformResponse: JSONBigNumber.parse,
+      });
+
+      const defaultGas = new BigNumber(500);
+
+      return data.map(function (txMeta) {
+        const type = txMeta.tx.type;
+        const nonce = (txMeta.tx.nonce || 0).toString(16);
+
+        // tx_id example: "17970,295"
+        const blockHeight = new BigNumber(txMeta.tx_id.split(",")[0]);
+        const blockTime = txMeta.created_at;
+
+        const { to, amount } =
+          type === "Deposit" ? txMeta.tx.priority_op : txMeta.tx;
+
+        const from =
+          type === "Deposit"
+            ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+            : // magic address to prevent self-transfer operations.
+              txMeta.tx.from;
+
+        const hash =
+          type === "Transfer" ? "0x" + txMeta.hash.split(":")[1] : txMeta.hash;
+
+        return {
+          hash,
+          from,
+          to,
+          status: new BigNumber(txMeta.success ? 1 : 0),
+          received_at: blockTime,
+          nonce: `0x0${nonce}`,
+          value: new BigNumber(amount),
+          gas: defaultGas,
+          gas_price: new BigNumber(txMeta.tx.fee || 0).div(defaultGas),
+          block: {
+            height: blockHeight,
+            time: blockTime,
+            hash: "0x0",
+          },
+          confirmations: blockHeight,
+          cumulative_gas_used: defaultGas,
+          gas_used: defaultGas,
+        };
+      });
+    },
+
+    async getTransactionsRollup(address, block_hash) {
+      let txs = [];
+      if (block_hash) {
+        return {
+          truncated: false,
+          txs,
+        };
+      }
+
+      const limit = 100;
+      for (let offset = 0; ; offset += limit) {
+        const txBatch = await this.getBatchedTransactions(
+          address,
+          limit,
+          offset
+        );
+        txs = [...txs, ...txBatch];
+
+        if (txBatch.length === 0) {
+          break;
+        }
+      }
+
+      return {
+        truncated: false,
+        txs,
+      };
+    },
+
+    async getTransactions(address, block_hash, batch_size = 2000) {
+      const syncHTTPProvider = await zksync.getDefaultProvider("mainnet");
+
+      const accountState = await syncHTTPProvider.getState(address);
+      if (!accountState.id) {
+        return await this.getTransactionsEthereum(
+          address,
+          block_hash,
+          batch_size
+        );
+      }
+
+      return await this.getTransactionsRollup(address, block_hash);
+    },
+
+    async getTransactionsEthereum(address, block_hash, batch_size = 2000) {
+      let { data } = await network({
+        method: "GET",
+        url: URL.format({
+          pathname: `${ethBaseURL}/addresses/${address}/transactions`,
           query: {
             batch_size,
             noinput: true,
@@ -122,52 +223,67 @@ export const apiForCurrency = (currency: CryptoCurrency): API => {
           ),
         };
       }
+
       return data;
     },
 
-    async getCurrentBlock() {
+    async getCurrentBlock(): Block {
       const { data } = await network({
         method: "GET",
-        url: `${baseURL}/blocks/current`,
+        url: `${rollupBaseURL}/blocks`,
+        query: {
+          limit: 1,
+        },
         transformResponse: JSONBigNumber.parse,
       });
-      return data;
+
+      const rawBlock = data[0];
+      return {
+        ...rawBlock,
+        height: rawBlock.block_number,
+      };
     },
 
     async getAccountNonce(address) {
-      const { data } = await network({
-        method: "GET",
-        url: `${baseURL}/addresses/${address}/nonce`,
-      });
-      return data[0].nonce;
+      const syncHTTPProvider = await zksync.getDefaultProvider("mainnet");
+      const accountState = await syncHTTPProvider.getState(address);
+      if (!accountState.id) {
+        const { data } = await network({
+          method: "GET",
+          url: `${ethBaseURL}/addresses/${address}/nonce`,
+        });
+        return data[0].nonce;
+      }
+
+      return accountState.committed.nonce;
     },
 
     async broadcastTransaction(tx) {
       const { data } = await network({
         method: "POST",
-        url: `${baseURL}/transactions/send`,
+        url: `${rollupBaseURL}/transactions/send`,
         data: { tx },
       });
       return data.result;
     },
 
     async getAccountBalance(address) {
-      const { data } = await network({
-        method: "GET",
-        url: `${baseURL}/addresses/${address}/balance`,
-        transformResponse: JSONBigNumber.parse,
-      });
-      return BigNumber(data[0].balance);
+      const syncHTTPProvider = await zksync.getDefaultProvider("mainnet");
+      const accountState = await syncHTTPProvider.getState(address);
+      if (!accountState.id) {
+        const { data } = await network({
+          method: "GET",
+          url: `${ethBaseURL}/addresses/${address}/balance`,
+          transformResponse: JSONBigNumber.parse,
+        });
+        return new BigNumber(data[0].balance);
+      }
+
+      return new BigNumber(accountState.committed.balances.ETH);
     },
 
-    async getERC20Balances(input) {
-      const { data } = await network({
-        method: "POST",
-        url: `${baseURL}/erc20/balances`,
-        transformResponse: JSONBigNumber.parse,
-        data: input,
-      });
-      return data;
+    async getERC20Balances(_) {
+      return [];
     },
 
     async getERC20ApprovalsPerContract(owner, contract) {
@@ -175,7 +291,7 @@ export const apiForCurrency = (currency: CryptoCurrency): API => {
         const { data } = await network({
           method: "GET",
           url: URL.format({
-            pathname: `${baseURL}/erc20/approvals`,
+            pathname: `${rollupBaseURL}/erc20/approvals`,
             query: {
               owner,
               contract,
@@ -201,7 +317,7 @@ export const apiForCurrency = (currency: CryptoCurrency): API => {
     async roughlyEstimateGasLimit(address) {
       const { data } = await network({
         method: "GET",
-        url: `${baseURL}/addresses/${address}/estimate-gas-limit`,
+        url: `${rollupBaseURL}/addresses/${address}/estimate-gas-limit`,
         transformResponse: JSONBigNumber.parse,
       });
       return BigNumber(data.estimated_gas_limit);
@@ -219,7 +335,7 @@ export const apiForCurrency = (currency: CryptoCurrency): API => {
 
       const { data } = await network({
         method: "POST",
-        url: `${baseURL}/addresses/${address}/estimate-gas-limit`,
+        url: `${rollupBaseURL}/addresses/${address}/estimate-gas-limit`,
         data: post,
         transformResponse: JSONBigNumber.parse,
       });
@@ -235,7 +351,7 @@ export const apiForCurrency = (currency: CryptoCurrency): API => {
       async () => {
         const { data } = await network({
           method: "GET",
-          url: `${baseURL}/gastracker/barometer`,
+          url: `${rollupBaseURL}/gastracker/barometer`,
         });
         return {
           low: BigNumber(data.low),
