@@ -323,3 +323,18 @@ export const findTokenAccountByCurrency = (
   }
   return null; // else return nothing
 };
+
+
+// export const isAccountZk = (addr): boolean => {
+//   const syncHTTPProvider = zksync.getDefaultProvider("mainnet");
+//   const accountState = syncHTTPProvider.getState(addr);
+//   return !!accountState.id;
+// };
+
+async function isAccountZk(addr) {
+  const syncHTTPProvider = zksync.getDefaultProvider("mainnet");
+  const accountState = syncHTTPProvider.getState(addr);
+  return !!accountState.id;
+};
+
+module.exports.isAccountZk = isAccountZk;
