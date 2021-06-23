@@ -1,8 +1,97 @@
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path opacity="0.6" d="M11.9985 3.00189V9.65439L17.6212 12.1669L11.9985 3.00189Z" fill="#0EBDCD"/>
-<path d="M11.9985 3.00189L6.375 12.1669L11.9985 9.65439V3.00189Z" fill="#0EBDCD"/>
-<path opacity="0.6" d="M11.9985 16.4779V20.9981L17.625 13.2139L11.9985 16.4779Z" fill="#0EBDCD"/>
-<path d="M11.9985 20.9981V16.4771L6.375 13.2139L11.9985 20.9981Z" fill="#0EBDCD"/>
-<path opacity="0.2" d="M11.9985 15.4316L17.6212 12.1669L11.9985 9.65588V15.4316Z" fill="#0EBDCD"/>
-<path opacity="0.6" d="M6.375 12.1669L11.9985 15.4316V9.65588L6.375 12.1669Z" fill="#0EBDCD"/>
+<svg width="120" height="246" viewBox="0 0 120 246" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0)">
+<g filter="url(#filter0_dd)">
+<path d="M0 148.5L59.7007 113.08L120 149.5L60.3145 189.5L0 148.5Z" fill="#0EBBCB"/>
+<path d="M0 148.5L59.7007 113.08L120 149.5L60.3145 189.5L0 148.5Z" fill="url(#paint0_angular)" fill-opacity="0.2"/>
+</g>
+<g filter="url(#filter1_dd)">
+<path d="M0 126.5L59.7007 91.0796L120 127.5L60.3145 167.5L0 126.5Z" fill="#0EBBCB"/>
+<path d="M0 126.5L59.7007 91.0796L120 127.5L60.3145 167.5L0 126.5Z" fill="url(#paint1_angular)" fill-opacity="0.2"/>
+</g>
+<g filter="url(#filter2_dd)">
+<path d="M60 241L120 159L60 200L0 159L60 241Z" fill="#0EBDCD"/>
+<path d="M60 241L120 159L60 200L0 159L60 241Z" fill="url(#paint2_angular)" fill-opacity="0.2"/>
+</g>
+<g filter="url(#filter3_dd)">
+<path d="M60 10L120 94.8571L60 136L0 94.8571L60 10Z" fill="#0FD1E2"/>
+<path d="M60 10L120 94.8571L60 136L0 94.8571L60 10Z" fill="url(#paint3_angular)" fill-opacity="0.1"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_dd" x="-4" y="89" width="128" height="128" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"/>
+<feOffset dy="4"/>
+<feGaussianBlur stdDeviation="2"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"/>
+<feOffset dy="4"/>
+<feGaussianBlur stdDeviation="2"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="effect1_dropShadow" result="effect2_dropShadow"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect2_dropShadow" result="shape"/>
+</filter>
+<filter id="filter1_dd" x="-4" y="67" width="128" height="128" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"/>
+<feOffset dy="4"/>
+<feGaussianBlur stdDeviation="2"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"/>
+<feOffset dy="4"/>
+<feGaussianBlur stdDeviation="2"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="effect1_dropShadow" result="effect2_dropShadow"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect2_dropShadow" result="shape"/>
+</filter>
+<filter id="filter2_dd" x="-4" y="159" width="128" height="90" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"/>
+<feOffset dy="4"/>
+<feGaussianBlur stdDeviation="2"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"/>
+<feOffset dy="4"/>
+<feGaussianBlur stdDeviation="2"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="effect1_dropShadow" result="effect2_dropShadow"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect2_dropShadow" result="shape"/>
+</filter>
+<filter id="filter3_dd" x="-4" y="10" width="128" height="134" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"/>
+<feOffset dy="4"/>
+<feGaussianBlur stdDeviation="2"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"/>
+<feOffset dy="4"/>
+<feGaussianBlur stdDeviation="2"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="effect1_dropShadow" result="effect2_dropShadow"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect2_dropShadow" result="shape"/>
+</filter>
+<radialGradient id="paint0_angular" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(60 149) rotate(89.5225) scale(27.4586 27.4548)">
+<stop stop-opacity="0.19"/>
+<stop offset="1" stop-opacity="0"/>
+</radialGradient>
+<radialGradient id="paint1_angular" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(60 127) rotate(89.5225) scale(27.4586 27.4548)">
+<stop stop-opacity="0.19"/>
+<stop offset="1" stop-opacity="0"/>
+</radialGradient>
+<radialGradient id="paint2_angular" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(60 200) rotate(90) scale(17.7951 26.0417)">
+<stop stop-opacity="0.24"/>
+<stop offset="1" stop-opacity="0"/>
+</radialGradient>
+<radialGradient id="paint3_angular" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(60 68.5) rotate(90) scale(67.5 64.2857)">
+<stop stop-opacity="0.41"/>
+<stop offset="1" stop-opacity="0"/>
+</radialGradient>
+<clipPath id="clip0">
+<rect width="120" height="246" fill="white"/>
+</clipPath>
+</defs>
 </svg>
