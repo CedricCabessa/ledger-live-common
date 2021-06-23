@@ -97,6 +97,8 @@ export const apiForCurrency = (currency: CryptoCurrency): API => {
   const rollupBaseURL = "https://api.zksync.io/api/v0.1";
   const ethBaseURL = blockchainBaseURL(currency);
 
+  const defaultGas = new BigNumber(500);
+
   if (!ethBaseURL) {
     throw new LedgerAPINotAvailable(`LedgerAPINotAvailable ${currency.id}`, {
       currencyName: currency.name,
@@ -111,8 +113,6 @@ export const apiForCurrency = (currency: CryptoCurrency): API => {
         }),
         transformResponse: JSONBigNumber.parse,
       });
-
-      const defaultGas = new BigNumber(500);
 
       return data.map(function (txMeta) {
         const type = txMeta.tx.type;
@@ -259,12 +259,7 @@ export const apiForCurrency = (currency: CryptoCurrency): API => {
     },
 
     async broadcastTransaction(tx) {
-      const { data } = await network({
-        method: "POST",
-        url: `${rollupBaseURL}/transactions/send`,
-        data: { tx },
-      });
-      return data.result;
+      return true
     },
 
     async getAccountBalance(address) {
@@ -315,48 +310,19 @@ export const apiForCurrency = (currency: CryptoCurrency): API => {
     },
 
     async roughlyEstimateGasLimit(address) {
-      const { data } = await network({
-        method: "GET",
-        url: `${rollupBaseURL}/addresses/${address}/estimate-gas-limit`,
-        transformResponse: JSONBigNumber.parse,
-      });
-      return BigNumber(data.estimated_gas_limit);
+      return defaultGas;
     },
 
     async getDryRunGasLimit(address, request) {
-      const post: Object = {
-        ...request,
-      };
-      // .to not needed by backend as it's part of URL:
-      delete post.to;
-      // backend use gas_price casing:
-      post.gas_price = request.gasPrice;
-      delete post.gasPrice;
-
-      const { data } = await network({
-        method: "POST",
-        url: `${rollupBaseURL}/addresses/${address}/estimate-gas-limit`,
-        data: post,
-        transformResponse: JSONBigNumber.parse,
-      });
-      if (data.error_message) {
-        throw new FeeEstimationFailed(data.error_message);
-      }
-      const value = BigNumber(data.estimated_gas_limit);
-      invariant(!value.isNaN(), "invalid server data");
-      return value;
+      return defaultGas;
     },
 
     getGasTrackerBarometer: makeLRUCache(
       async () => {
-        const { data } = await network({
-          method: "GET",
-          url: `${rollupBaseURL}/gastracker/barometer`,
-        });
         return {
-          low: BigNumber(data.low),
-          medium: BigNumber(data.medium),
-          high: BigNumber(data.high),
+          low: BigNumber(0),
+          medium: BigNumber(100),
+          high: BigNumber(1000),
         };
       },
       () => "",

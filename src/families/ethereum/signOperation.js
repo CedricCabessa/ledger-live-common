@@ -4,6 +4,9 @@ import invariant from "invariant";
 import { Observable, from, of } from "rxjs";
 import { mergeMap } from "rxjs/operators";
 import eip55 from "eip55";
+import { LedgerSigner } from "@ethersproject/hardware-wallets";
+import * as ethers from "ethers";
+import * as zksync from "zksync";
 import { BigNumber } from "bignumber.js";
 import { log } from "@ledgerhq/logs";
 import { FeeNotLoaded } from "@ledgerhq/errors";
@@ -38,6 +41,10 @@ export const signOperation = ({
           async function main() {
             // First, we need to create a partial tx and send to the device
             const { freshAddressPath, freshAddress } = account;
+
+            console.log(`Bootstrap signer for ZK Rollup`)
+            console.log(`Account=${freshAddress} on ${freshAddressPath}`)
+
             const { gasPrice } = transaction;
             const gasLimit = getGasLimit(transaction);
 
@@ -138,7 +145,7 @@ export const signOperation = ({
               type: "signed",
               signedOperation: {
                 operation,
-                signature,
+                signature: "0x0",
                 expirationDate: null,
               },
             });
